@@ -1,0 +1,2 @@
+WORLD_SIZE = (128, 72)
+SCALE = 10
