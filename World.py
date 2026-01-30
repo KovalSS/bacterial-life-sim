@@ -3,7 +3,7 @@ from Food import Food
 from settings import WORLD_SIZE
 import pygame
 class World:
-    def __init__(self,start_count_food=100, start_count_bacteria=10,percentage_red = 0.1,count_food_per_update=10):
+    def __init__(self,start_count_food=100, start_count_bacteria=50,percentage_red = 0.5,count_food_per_update=10):
         self.bacteria_population = []
 
         for _ in range(int(start_count_bacteria * (1 - percentage_red))):
@@ -40,7 +40,7 @@ class World:
                 child = b.reproduce()
                 if child:
                     new_babies.append(child)
-            b.move()
+            b.move(self)
         self.bacteria_population.extend(new_babies)
         self.create_food()
 
@@ -90,7 +90,7 @@ class World:
         graph_h = h // 2
         graph_w = w - graph_margin * 2
         graph_x = x + graph_margin
-        graph_y = y + 50  # Відступ зверху
+        graph_y = y + 50
 
         # Малюємо рамку графіка
         pygame.draw.rect(screen, (0, 0, 0), (graph_x, graph_y, graph_w, graph_h))
