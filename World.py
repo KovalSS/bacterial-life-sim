@@ -1,10 +1,16 @@
-from Bacteria import Bacteria
+from Bacteria import *
 from Food import Food
 from settings import WORLD_SIZE
 import pygame
 class World:
-    def __init__(self,start_count_food=100, start_count_bacteria=1,count_food_per_update=10):
-        self.bacteria_population = [Bacteria() for _ in range(start_count_bacteria)]
+    def __init__(self,start_count_food=100, start_count_bacteria=10,count_food_per_update=10):
+        self.bacteria_population = []
+
+        for _ in range(start_count_bacteria // 2):
+            self.bacteria_population.append(BlueBacteria())
+        for _ in range(start_count_bacteria // 2):
+            self.bacteria_population.append(RedBacteria())
+
         self.food_list = [Food() for _ in range(start_count_food)]
         self.count_food_per_update = count_food_per_update
 
@@ -80,10 +86,11 @@ class World:
     def draw_ui(self, screen, w, h):
         text_color = (0, 0, 0)
 
-        info_bact = self.font.render(f"Bacteria: {len(self.bacteria_population)}", True, text_color)
-        screen.blit(info_bact, (20, 20))
+        blues = sum(1 for b in self.bacteria_population if isinstance(b, BlueBacteria))
+        reds = sum(1 for b in self.bacteria_population if isinstance(b, RedBacteria))
 
+        screen.blit(self.font.render(f"Blue: {blues}", True, (0, 0, 200)), (20, 20))
+        screen.blit(self.font.render(f"Red: {reds}", True, (200, 0, 0)), (20, 50))
+        screen.blit(self.font.render(f"Food: {len(self.food_list)}", True, (0, 100, 0)), (20, 80))
 
-        info_food = self.font.render(f"Food: {len(self.food_list)}", True, text_color)
-        screen.blit(info_food, (20, 50))
 
