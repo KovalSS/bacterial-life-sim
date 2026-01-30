@@ -1,3 +1,2 @@
 WORLD_SIZE = (128, 72)
-SCALE = 10
-OFFSET = (0, 0)
+
