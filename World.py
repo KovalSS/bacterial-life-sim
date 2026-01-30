@@ -16,39 +16,32 @@ class World:
 
         self.font = pygame.font.SysFont("Arial", 20, bold=True)
 
-    def _found_the_closest_food(self, bacteria):
-        closest_food = None
-        min_distance = float('inf')
-        for food in self.food_list:
-            distance = ((bacteria.position_X - food.position_X) ** 2 + (bacteria.position_Y - food.position_Y) ** 2) ** 0.5
-            if distance < min_distance:
-                min_distance = distance
-                closest_food = food
-        return closest_food
-
-    def _eat_food(self, bacteria):
-        if bacteria.target_food is None:
-            return
-        if bacteria.check_collision(bacteria.target_food) and bacteria.target_food in self.food_list:
-            self.food_list.remove(bacteria.target_food)
-            bacteria.heal(20)
-            new_bacteria = bacteria.reproduce()
-            if new_bacteria is not None:
-                self.bacteria_population.append(new_bacteria)
-            return
-
-    def _kill_dead_bacteria(self):
+    def update(self):
         self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
 
-    def update(self):
-        self._kill_dead_bacteria()
+        new_babies = []
         for b in self.bacteria_population:
-            self._eat_food(b)
-            target_food = self._found_the_closest_food(b)
-            b.set_target_food(target_food)
-        for b in self.bacteria_population:
+            if b.target is None or (hasattr(b.target, 'is_dead') and b.target.is_dead()) or (
+                b.target not in self.food_list and b.target not in self.bacteria_population):
+                b.target = b.think(self)
+
+
+            if b.target:
+                dx = b.target.position_X - b.position_X
+                dy = b.target.position_Y - b.position_Y
+                b.angle = math.degrees(math.atan2(dy, dx))
+
+
+            if b.target and b.check_collision(b.target):
+                b.eat(b.target, self)
+                b.target = None
+                child = b.reproduce()
+                if child:
+                    new_babies.append(child)
             b.move()
+        self.bacteria_population.extend(new_babies)
         self.create_food()
+
     def create_food(self):
         for _ in range(self.count_food_per_update):
             self.food_list.append(Food())
