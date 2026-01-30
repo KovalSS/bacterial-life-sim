@@ -3,7 +3,7 @@ from Food import Food
 from settings import WORLD_SIZE
 import pygame
 class World:
-    def __init__(self,start_count_food=100, start_count_bacteria=50,count_food_per_update=10):
+    def __init__(self,start_count_food=100, start_count_bacteria=1,count_food_per_update=10):
         self.bacteria_population = [Bacteria() for _ in range(start_count_bacteria)]
         self.food_list = [Food() for _ in range(start_count_food)]
         self.count_food_per_update = count_food_per_update
@@ -25,11 +25,14 @@ class World:
             return
         if bacteria.check_collision(bacteria.target_food) and bacteria.target_food in self.food_list:
             self.food_list.remove(bacteria.target_food)
-            bacteria.health += 10
+            bacteria.heal(20)
+            new_bacteria = bacteria.reproduce()
+            if new_bacteria is not None:
+                self.bacteria_population.append(new_bacteria)
             return
 
     def _kill_dead_bacteria(self):
-        self.bacteria_population = [b for b in self.bacteria_population if b.health > 0]
+        self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
 
     def update(self):
         self._kill_dead_bacteria()

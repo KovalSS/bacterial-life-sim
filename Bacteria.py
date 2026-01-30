@@ -6,12 +6,19 @@ import math
 from Entity import Entity
 
 class Bacteria(Entity):
-    def __init__(self):
+
+    def __init__(self, speed=None, MAX_HEALTH = None):
         super().__init__()
         self.target_food = None
         self.angel = random.uniform(0, 360)
-        self.speed = random.uniform(0.5, 2)
-        self.MAX_HEALTH = random.uniform(80, 120)
+        if speed is not None:
+            self.speed = speed
+        else:
+            self.speed = random.uniform(0.5, 2)
+        if MAX_HEALTH is not None:
+            self.MAX_HEALTH = MAX_HEALTH
+        else:
+            self.MAX_HEALTH = random.uniform(80, 120)
         self.health = self.MAX_HEALTH
 
     def set_target_food(self, target_food:Food):
@@ -22,7 +29,7 @@ class Bacteria(Entity):
             self.angel = math.degrees(math.atan2(dy, dx))
 
     def move(self):
-        self.health -= self.speed * 3
+        self.health -= self.speed * 10
         self.position_X += math.cos(math.radians(self.angel)) * self.speed
         self.position_Y += math.sin(math.radians(self.angel)) * self.speed
         self.position_X = max(0, min(WORLD_SIZE[0], self.position_X))
@@ -40,3 +47,20 @@ class Bacteria(Entity):
     def heal(self, amount):
         self.health += amount
         self.health = min(self.MAX_HEALTH, 120)
+
+    def is_dead(self):
+        return self.health <= 0
+
+    def get_health_percentage(self):
+        return self.health / self.MAX_HEALTH
+
+    def reproduce(self):
+        if self.get_health_percentage() >= 0.8:
+            self.health /= 2
+            child_speed = self.speed * random.uniform(0.8, 1.2)
+            child_MAX_HEALTH = self.MAX_HEALTH * random.uniform(0.8, 1.2)
+            child = Bacteria(speed=child_speed, MAX_HEALTH=child_MAX_HEALTH)
+            child.position_X = max(0, min(WORLD_SIZE[0], self.position_X + random.uniform(-1, 1)))
+            child.position_Y = max(0, min(WORLD_SIZE[1], self.position_Y + random.uniform(-1, 1)))
+            return child
+        return None
