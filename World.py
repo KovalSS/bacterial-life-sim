@@ -25,25 +25,12 @@ class World:
         self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
 
         new_babies = []
+
         for b in self.bacteria_population:
-            if b.target is None or (hasattr(b.target, 'is_dead') and b.target.is_dead()) or (
-                b.target not in self.food_list and b.target not in self.bacteria_population):
-                b.target = b.think(self)
+            child = b.update(self)
+            if child:
+                new_babies.append(child)
 
-
-            if b.target:
-                dx = b.target.position_X - b.position_X
-                dy = b.target.position_Y - b.position_Y
-                b.angle = math.degrees(math.atan2(dy, dx))
-
-
-            if b.target and b.check_collision(b.target):
-                b.eat(b.target, self)
-                b.target = None
-                child = b.reproduce()
-                if child:
-                    new_babies.append(child)
-            b.move(self)
         self.bacteria_population.extend(new_babies)
         self.create_food()
 
