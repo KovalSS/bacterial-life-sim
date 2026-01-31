@@ -1,5 +1,6 @@
 from Entities.Bacterias.RedBacteria import RedBacteria
 from Entities.Bacterias.BlueBacteria import BlueBacteria
+from Entities.Bacterias.VioletBacteria import VioletBacteria
 from Entities.Food import Food
 from settings import *
 import pygame
@@ -7,6 +8,7 @@ class World:
     def __init__(self,start_count_food=START_COUNT_FOOD,
                  start_count_BlueBacteria=START_COUNT_BlueBacteria,
                  start_count_RedBacteria=START_COUNT_RedBacteria,
+                 start_count_VioletBacteria=START_COUNT_VioletBacteria,
                  count_food_per_update=COUNT_FOOD_PER_UPDATE):
         self.bacteria_population = []
 
@@ -14,6 +16,9 @@ class World:
             self.bacteria_population.append(BlueBacteria())
         for _ in range(start_count_RedBacteria):
             self.bacteria_population.append(RedBacteria())
+        for _ in range(start_count_VioletBacteria):
+            self.bacteria_population.append(VioletBacteria())
+
 
         self.food_list = [Food() for _ in range(start_count_food)]
         self.count_food_per_update = count_food_per_update
@@ -37,9 +42,10 @@ class World:
 
         blues = sum(1 for b in self.bacteria_population if isinstance(b, BlueBacteria))
         reds = sum(1 for b in self.bacteria_population if isinstance(b, RedBacteria))
+        violrs = sum(1 for b in self.bacteria_population if isinstance(b, VioletBacteria))
         foods = len(self.food_list)
 
-        self.history.append((blues, reds, foods))
+        self.history.append((blues, reds,violrs, foods))
 
         if len(self.history) > self.max_history_length:
             self.history.pop(0)
@@ -89,27 +95,33 @@ class World:
 
         max_val = 0
         for data in self.history:
-            max_val = max(max_val, data[0], data[1], data[2])
+            max_val = max(max_val, data[0], data[1], data[2], data[3])
         max_val = max(max_val, 50)
 
         def get_points(data_index):
             points = []
             for i, data in enumerate(self.history):
-                value = data[data_index]  # 0-Blue, 1-Red, 2-Food
-
+                value = data[data_index]
                 px = graph_x + (i / len(self.history)) * graph_w
-
                 py = (graph_y + graph_h) - (value / max_val) * graph_h
                 points.append((px, py))
             return points
 
-        pygame.draw.lines(screen, (0, 150, 0), False, get_points(2), 2)
+
+        pygame.draw.lines(screen, (0, 150, 0), False, get_points(3), 2)
         pygame.draw.lines(screen, (50, 50, 255), False, get_points(0), 2)
         pygame.draw.lines(screen, (255, 50, 50), False, get_points(1), 2)
-        curr_blue, curr_red, curr_food = self.history[-1]
+        pygame.draw.lines(screen, (255, 0, 255), False, get_points(2), 2)
 
-        screen.blit(self.font.render(f"Food: {curr_food}", True, (0, 200, 0)), (graph_x, graph_y + graph_h + 10))
-        screen.blit(self.font.render(f"Blue: {curr_blue}", True, (100, 100, 255)), (graph_x, graph_y + graph_h + 30))
-        screen.blit(self.font.render(f"Red: {curr_red}", True, (255, 100, 100)), (graph_x, graph_y + graph_h + 50))
+        curr_blue, curr_red, curr_violet, curr_food = self.history[-1]
+
+        screen.blit(self.font.render(f"Food: {curr_food}", True, (0, 200, 0)),
+                    (graph_x, graph_y + graph_h + 10))
+        screen.blit(self.font.render(f"Blue: {curr_blue}", True, (100, 100, 255)),
+                    (graph_x, graph_y + graph_h + 30))
+        screen.blit(self.font.render(f"Red: {curr_red}", True, (255, 100, 100)),
+                    (graph_x, graph_y + graph_h + 50))
+        screen.blit(self.font.render(f"Violet: {curr_violet}", True, (255, 0, 255)),
+                    (graph_x, graph_y + graph_h + 70))
 
 

@@ -10,7 +10,7 @@ class Bacteria(Entity):
     def __init__(self, color,penalty_speed=None,
                  penalty_MAX_HEALTH=None,
                  speed=None, MAX_HEALTH = None,
-                 dna_blue=None):
+                 dna=None):
         super().__init__()
         self.penalty_speed = penalty_speed
         self.penalty_MAX_HEALTH = penalty_MAX_HEALTH
@@ -20,7 +20,10 @@ class Bacteria(Entity):
         self.speed = speed
         self.MAX_HEALTH = MAX_HEALTH
         self.health = self.MAX_HEALTH
-        self.dna_blue = dna_blue
+        if dna is None:
+            self.dna = {}
+        else:
+            self.dna = dna
 
     def update(self, world):
         if self.is_dead():
@@ -30,12 +33,14 @@ class Bacteria(Entity):
                 self.target not in world.food_list and self.target not in world.bacteria_population):
             self.target = self.think(world)
 
+        self.move(world)
+
         child = None
         if self.target and self.check_collision(self.target):
             self.eat(self.target, world)
             self.target = None
             child = self.reproduce()
-        self.move(world)
+
 
         return child
 
@@ -46,8 +51,7 @@ class Bacteria(Entity):
         return None
 
     def eat(self, target):
-        if target:
-            self.heal(20)
+        pass
 
     def calculate_angle(self, world):
         if self.target:
@@ -98,9 +102,12 @@ class Bacteria(Entity):
     def reproduce(self,**kwargs):
         if self.get_health_percentage() >= 0.8:
             self.health /= 2
+            child_dna = self.dna.copy()
+            for key in child_dna:
+                child_dna[key] *= random.uniform(0.8, 1.2)
             child_speed = self.speed * random.uniform(0.8, 1.2)
             child_MAX_HEALTH = self.MAX_HEALTH * random.uniform(0.8, 1.2)
-            child = self.__class__(speed=child_speed, MAX_HEALTH=child_MAX_HEALTH,**kwargs)
+            child = self.__class__(speed=child_speed, MAX_HEALTH=child_MAX_HEALTH,dna=child_dna,**kwargs)
             child.position_X = max(0, min(WORLD_SIZE[0], self.position_X + random.uniform(-1, 1)))
             child.position_Y = max(0, min(WORLD_SIZE[1], self.position_Y + random.uniform(-1, 1)))
             return child
