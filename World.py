@@ -10,6 +10,7 @@ class World:
                  start_count_RedBacteria=START_COUNT_RedBacteria,
                  start_count_VioletBacteria=START_COUNT_VioletBacteria,
                  count_food_per_update=COUNT_FOOD_PER_UPDATE):
+        self.grid = {}
         self.bacteria_population = []
 
         for _ in range(start_count_BlueBacteria):
@@ -27,9 +28,31 @@ class World:
         self.history = []
         self.max_history_length = 300
 
-    def update(self):
-        self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
+    def update_grid(self):
+        self.grid = {}
+        all_entities = self.food_list + self.bacteria_population
+        for entity in all_entities:
+            cell_x = int(entity.position_X // CELL_SIZE)
+            cell_y = int(entity.position_Y // CELL_SIZE)
+            key = (cell_x, cell_y)
+            if key not in self.grid:
+                self.grid[key] = []
+            self.grid[key].append(entity)
 
+    def get_nearby_objects(self, entity):
+        objects = []
+        cx = int(entity.position_X // CELL_SIZE)
+        cy = int(entity.position_Y // CELL_SIZE)
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                key = (cx + dx, cy + dy)
+                if key in self.grid:
+                    objects.extend(self.grid[key])
+        return objects
+
+    def update(self):
+        self.update_grid()
+        self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
         new_babies = []
 
         for b in self.bacteria_population:
@@ -51,8 +74,10 @@ class World:
             self.history.pop(0)
 
     def create_food(self):
-        for _ in range(self.count_food_per_update):
-            self.food_list.append(Food())
+        if len(self.food_list) < MAX_FOOD_COUNT:
+            for _ in range(self.count_food_per_update):
+                 if len(self.food_list) < MAX_FOOD_COUNT:
+                    self.food_list.append(Food())
 
     def draw(self, screen):
         screen_w, screen_h = screen.get_size()

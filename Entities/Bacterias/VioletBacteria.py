@@ -47,22 +47,6 @@ class VioletBacteria(Bacteria):
     def can_eat(self, other):
         return isinstance(other, Food) or isinstance(other, BlueBacteria)
 
-    def think(self, world):
-        closest = None
-        min_dist = float('inf')
-        for f in world.food_list:
-            if self.can_eat(f):
-                dist = ((self.position_X - f.position_X) ** 2 + (self.position_Y - f.position_Y) ** 2) ** 0.5
-                if dist < min_dist:
-                    min_dist = dist
-                    closest = f
-        for b in world.bacteria_population:
-            if self.can_eat(b):
-                dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5 - hunting_bias_VioletBacteria
-                if dist < min_dist:
-                    min_dist = dist
-                    closest = b
-        return closest
 
     def eat(self, target, world):
         if target in world.food_list:

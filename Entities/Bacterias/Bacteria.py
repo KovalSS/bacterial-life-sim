@@ -48,10 +48,19 @@ class Bacteria(Entity):
         return False
 
     def think(self, world):
-        return None
+        closest = None
+        min_dist = float('inf')
+        nearby_objects = world.get_nearby_objects(self)
+        for entity in nearby_objects:
+            if self.can_eat(entity):
+                dx = self.position_X - entity.position_X
+                dy = self.position_Y - entity.position_Y
+                dist_sq = dx * dx + dy * dy
 
-    def eat(self, target):
-        pass
+                if dist_sq < min_dist:
+                    min_dist = dist_sq
+                    closest = entity
+        return closest
 
     def calculate_angle(self, world):
         if self.target:

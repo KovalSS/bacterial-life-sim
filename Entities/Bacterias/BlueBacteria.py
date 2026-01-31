@@ -26,7 +26,7 @@ class BlueBacteria(Bacteria):
             total_dx += food_dx
             total_dy += food_dy
 
-        for b in world.bacteria_population:
+        for b in world.get_nearby_objects(self):
             b_type = type(b).__name__
             if (b_type == "RedBacteria" or b_type == "VioletBacteria") and not b.is_dead():
                 dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5
@@ -45,16 +45,6 @@ class BlueBacteria(Bacteria):
     def can_eat(self, other):
         return isinstance(other, Food)
 
-    def think(self, world):
-        closest = None
-        min_dist = float('inf')
-        for f in world.food_list:
-            if self.can_eat(f):
-                dist = ((self.position_X - f.position_X) ** 2 + (self.position_Y - f.position_Y) ** 2) ** 0.5
-                if dist < min_dist:
-                    min_dist = dist
-                    closest = f
-        return closest
 
     def eat(self, target, world):
         if target in world.food_list:

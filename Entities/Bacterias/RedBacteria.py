@@ -17,16 +17,6 @@ class RedBacteria(Bacteria):
         is_not_my_family = type(self) != type(other)
         return is_bacteria and is_not_my_family and not other.is_dead()
 
-    def think(self, world):
-        closest = None
-        min_dist = float('inf')
-        for b in world.bacteria_population:
-            if self.can_eat(b):
-                dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5
-                if dist < min_dist:
-                    min_dist = dist
-                    closest = b
-        return closest
 
     def eat(self, target, world):
         if not target.is_dead():
