@@ -88,13 +88,11 @@ class Bacteria(Entity):
 
 class BlueBacteria(Bacteria):
     def __init__(self, speed=None, MAX_HEALTH=None, dna=None, penalty_speed=None, penalty_MAX_HEALTH=None):
-        if MAX_HEALTH is None:
-            MAX_HEALTH = random.uniform(150, 250)
-        if speed is None:
-            speed = random.uniform(1, 2)
+        MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_BlueBacteria)
+        speed = speed if  speed is not None else random.uniform(*SPEED_BlueBacteria)
         super().__init__(color=(0, 0, 255),
-                         penalty_speed = penalty_speed if penalty_speed is not None else 0.5,
-                         penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else 0.001,
+                         penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_BlueBacteria,
+                         penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_BlueBacteria,
                          speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna)
 
     def calculate_angle(self, world):
@@ -143,18 +141,12 @@ class BlueBacteria(Bacteria):
 
 class RedBacteria(Bacteria):
     def __init__(self, speed=None, MAX_HEALTH=None, dna=None, penalty_speed=None, penalty_MAX_HEALTH=None):
-        if MAX_HEALTH is None:
-            MAX_HEALTH = random.uniform(80, 100)
-        if speed is None:
-            speed = random.uniform(1.5, 3)
-        super().__init__(
-            color=(255, 0, 0),
-            speed=speed,
-            MAX_HEALTH=MAX_HEALTH,
-            dna=dna,
-            penalty_speed = penalty_speed if penalty_speed is not None else 0.3,
-            penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else 0.01
-        )
+        MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_RedBacteria)
+        speed = speed if speed is not None else random.uniform(*SPEED_RedBacteria)
+        super().__init__(color=(255, 0, 0),
+                         penalty_speed=penalty_speed if penalty_speed is not None else PENALTY_SPEED_RedBacteria,
+                         penalty_MAX_HEALTH=penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_RedBacteria,
+                         speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna)
 
     def can_eat(self, other):
         is_bacteria = isinstance(other, Bacteria)

@@ -1,14 +1,17 @@
 from Bacteria import *
 from Food import Food
-from settings import WORLD_SIZE
+from settings import *
 import pygame
 class World:
-    def __init__(self,start_count_food=100, start_count_bacteria=50,percentage_red = 0.5,count_food_per_update=10):
+    def __init__(self,start_count_food=START_COUNT_FOOD,
+                 start_count_BlueBacteria=START_COUNT_BlueBacteria,
+                 start_count_RedBacteria=START_COUNT_RedBacteria,
+                 count_food_per_update=COUNT_FOOD_PER_UPDATE):
         self.bacteria_population = []
 
-        for _ in range(int(start_count_bacteria * (1 - percentage_red))):
+        for _ in range(start_count_BlueBacteria):
             self.bacteria_population.append(BlueBacteria())
-        for _ in range(int(start_count_bacteria * percentage_red)):
+        for _ in range(start_count_RedBacteria):
             self.bacteria_population.append(RedBacteria())
 
         self.food_list = [Food() for _ in range(start_count_food)]
