@@ -1,5 +1,6 @@
-from Bacteria import *
-from Food import Food
+from Entities.Bacterias.RedBacteria import RedBacteria
+from Entities.Bacterias.BlueBacteria import BlueBacteria
+from Entities.Food import Food
 from settings import *
 import pygame
 class World:

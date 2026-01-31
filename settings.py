@@ -1,16 +1,16 @@
-WORLD_SIZE = (128, 72)
+WORLD_SIZE = (500, 500)
 
 START_COUNT_FOOD = 100
 START_COUNT_BlueBacteria = 30
 START_COUNT_RedBacteria = 5
-COUNT_FOOD_PER_UPDATE = 20
+COUNT_FOOD_PER_UPDATE = 10
 
 SPEED_BlueBacteria = (0.5, 1)
-MAX_HEALTH_BlueBacteria = (1000, 2500)
+MAX_HEALTH_BlueBacteria = (100, 200)
 PENALTY_SPEED_BlueBacteria = 0.1
-PENALTY_MAX_HEALTH_BlueBacteria = 0.0
+PENALTY_MAX_HEALTH_BlueBacteria = 0.001
 
-SPEED_RedBacteria = (0.5, 1)
+SPEED_RedBacteria = (1.0, 2.5)
 MAX_HEALTH_RedBacteria = (1000, 2500)
-PENALTY_SPEED_RedBacteria = 0.5
-PENALTY_MAX_HEALTH_RedBacteria = 0.0
+PENALTY_SPEED_RedBacteria = 0.02
+PENALTY_MAX_HEALTH_RedBacteria = 0.0005

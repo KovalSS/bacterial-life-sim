@@ -1,7 +1,5 @@
-import random
-from settings import *
 import pygame
-from Entity import Entity
+from Entities.Entity import Entity
 class Food(Entity):
     def __init__(self):
         super().__init__()
