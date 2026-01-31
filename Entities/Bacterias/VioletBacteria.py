@@ -1,20 +1,23 @@
 from Entities.Bacterias.Bacteria import *
-class BlueBacteria(Bacteria):
+from Entities.Bacterias.RedBacteria import RedBacteria
+from Entities.Bacterias.BlueBacteria import BlueBacteria
+from Entities.Food import Food
+class VioletBacteria(Bacteria):
     def __init__(self, speed=None,
                  MAX_HEALTH=None,
                  dna_blue=None,
                  penalty_speed=None,
                  penalty_MAX_HEALTH=None):
-        MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_BlueBacteria)
-        speed = speed if  speed is not None else random.uniform(*SPEED_BlueBacteria)
+        MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_VioletBacteria)
+        speed = speed if  speed is not None else random.uniform(*SPEED_VioletBacteria)
         if dna_blue is None:
             dna_blue = {
-                "fear": random.uniform(0, 5),
+                "fear": random.uniform(0, 2),
                 "fear_radius": random.uniform(10, 50)
             }
-        super().__init__(color=(0, 0, 255),
-                         penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_BlueBacteria,
-                         penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_BlueBacteria,
+        super().__init__(color=(255, 0, 255),
+                         penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_VioletBacteria,
+                         penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_VioletBacteria,
                          speed=speed, MAX_HEALTH=MAX_HEALTH, dna_blue=dna_blue)
 
     def calculate_angle(self, world):
@@ -27,8 +30,7 @@ class BlueBacteria(Bacteria):
             total_dy += food_dy
 
         for b in world.bacteria_population:
-            b_type = type(b).__name__
-            if (b_type == "RedBacteria" or b_type == "VioletBacteria") and not b.is_dead():
+            if isinstance(b, RedBacteria) and not b.is_dead():
                 dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5
 
                 if dist < self.dna_blue["fear_radius"] and dist > 0:
@@ -43,7 +45,7 @@ class BlueBacteria(Bacteria):
             self.angle = math.degrees(math.atan2(total_dy, total_dx))
 
     def can_eat(self, other):
-        return isinstance(other, Food)
+        return isinstance(other, Food) or isinstance(other, BlueBacteria)
 
     def think(self, world):
         closest = None
@@ -54,12 +56,21 @@ class BlueBacteria(Bacteria):
                 if dist < min_dist:
                     min_dist = dist
                     closest = f
+        for b in world.bacteria_population:
+            if self.can_eat(b):
+                dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5 - hunting_bias
+                if dist < min_dist:
+                    min_dist = dist
+                    closest = b
         return closest
 
     def eat(self, target, world):
         if target in world.food_list:
             world.food_list.remove(target)
             self.heal(20)
+        elif isinstance(target, BlueBacteria) and not target.is_dead():
+            target.health = -100
+            self.heal(40)
 
     def reproduce(self):
         child_dna = self.dna_blue.copy()

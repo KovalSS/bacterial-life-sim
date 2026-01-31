@@ -60,16 +60,16 @@ class Bacteria(Entity):
         metabolic_cost = (self.speed * self.penalty_speed) + (self.MAX_HEALTH * self.penalty_MAX_HEALTH)
         self.health -= metabolic_cost
 
-        step_distance = self.speed
-        if self.target and hasattr(self.target, 'position_X'):
-            dx = self.target.position_X - self.position_X
-            dy = self.target.position_Y - self.position_Y
-            dist_to_target = (dx ** 2 + dy ** 2) ** 0.5
-
-            if dist_to_target < step_distance:
-                self.position_X = self.target.position_X
-                self.position_Y = self.target.position_Y
-                return
+        # step_distance = self.speed
+        # if self.target and hasattr(self.target, 'position_X'):
+        #     dx = self.target.position_X - self.position_X
+        #     dy = self.target.position_Y - self.position_Y
+        #     dist_to_target = (dx ** 2 + dy ** 2) ** 0.5
+        #
+        #     if dist_to_target < step_distance:
+        #         self.position_X = self.target.position_X
+        #         self.position_Y = self.target.position_Y
+        #         return
 
         self.position_X += math.cos(math.radians(self.angle)) * self.speed
         self.position_Y += math.sin(math.radians(self.angle)) * self.speed
