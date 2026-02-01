@@ -1,5 +1,6 @@
 from Entities.Bacterias.Bacteria import *
-class BlueBacteria(Bacteria):
+from Entities.Bacterias.FearMixin import FearMixin
+class BlueBacteria(Bacteria, FearMixin):
     def __init__(self, speed=None,
                  MAX_HEALTH=None,
                  dna=None,
@@ -27,20 +28,10 @@ class BlueBacteria(Bacteria):
             total_dx += food_dx
             total_dy += food_dy
 
-        enemies = world.get_nearby_from_grid(self, world.grid_red)
-        enemies += world.get_nearby_from_grid(self, world.grid_violet)
+        fear_dx, fear_dy = self.get_fear_vector(world, [world.grid_red, world.grid_violet])
 
-        for enemy in enemies:
-            if not enemy.is_dead():
-                dist = ((self.position_X - enemy.position_X) ** 2 + (self.position_Y - enemy.position_Y) ** 2) ** 0.5
-
-                if dist < self.dna["fear_radius"] and dist > 0:
-                    run_dx = self.position_X - enemy.position_X
-                    run_dy = self.position_Y - enemy.position_Y
-                    strength = self.dna["fear"] / dist
-
-                    total_dx += run_dx * strength
-                    total_dy += run_dy * strength
+        total_dx += fear_dx
+        total_dy += fear_dy
 
         if total_dx != 0 or total_dy != 0:
             self.angle = math.degrees(math.atan2(total_dy, total_dx))
