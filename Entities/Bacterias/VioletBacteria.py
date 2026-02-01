@@ -3,7 +3,7 @@ from Entities.Bacterias.RedBacteria import RedBacteria
 from Entities.Bacterias.BlueBacteria import BlueBacteria
 from Entities.Bacterias.FearMixin import FearMixin
 from Entities.Food import Food
-class VioletBacteria(Bacteria):
+class VioletBacteria(Bacteria, FearMixin):
     def __init__(self, speed=None,
                  MAX_HEALTH=None,
                  dna=None,

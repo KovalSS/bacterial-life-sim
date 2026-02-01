@@ -11,8 +11,8 @@ class BlueBacteria(Bacteria, FearMixin):
         speed = speed if  speed is not None else random.uniform(*SPEED_BlueBacteria)
         if dna is None:
             dna = {
-                "fear": random.uniform(0, 20),
-                "fear_radius": random.uniform(0, 20)
+                "fear": random.uniform(*FEAR_BlueBacteria),
+                "fear_radius": random.uniform(*FEAR_RADIUS_BlueBacteria)
             }
         super().__init__(color=(0, 0, 255),
                          penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_BlueBacteria,

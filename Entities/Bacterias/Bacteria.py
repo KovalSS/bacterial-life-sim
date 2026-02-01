@@ -86,10 +86,15 @@ class Bacteria(Entity):
 
     def move(self, world):
         self.calculate_angle(world)
-        metabolic_cost = (self.speed * self.penalty_speed) + (self.MAX_HEALTH * self.penalty_MAX_HEALTH)
+        health_factor = 0.6 + (0.4 * self.get_health_percentage())
+
+        current_speed = self.speed * health_factor
+
+        metabolic_cost = (current_speed * self.penalty_speed) + (self.MAX_HEALTH * self.penalty_MAX_HEALTH)
         self.health -= metabolic_cost
 
-        step_distance = self.speed
+        step_distance = current_speed
+
         if self.target and hasattr(self.target, 'position_X'):
             dx = self.target.position_X - self.position_X
             dy = self.target.position_Y - self.position_Y
@@ -100,8 +105,9 @@ class Bacteria(Entity):
                 self.position_Y = self.target.position_Y
                 return
 
-        self.position_X += math.cos(math.radians(self.angle)) * self.speed
-        self.position_Y += math.sin(math.radians(self.angle)) * self.speed
+        self.position_X += math.cos(math.radians(self.angle)) * step_distance
+        self.position_Y += math.sin(math.radians(self.angle)) * step_distance
+
         self.position_X = max(0, min(WORLD_SIZE[0], self.position_X))
         self.position_Y = max(0, min(WORLD_SIZE[1], self.position_Y))
 
