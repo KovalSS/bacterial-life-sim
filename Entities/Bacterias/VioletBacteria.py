@@ -7,7 +7,8 @@ class VioletBacteria(Bacteria):
                  MAX_HEALTH=None,
                  dna=None,
                  penalty_speed=None,
-                 penalty_MAX_HEALTH=None):
+                 penalty_MAX_HEALTH=None,
+                 MITOSIS_RATE=None):
         MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_VioletBacteria)
         speed = speed if  speed is not None else random.uniform(*SPEED_VioletBacteria)
         if dna is None:
@@ -18,7 +19,7 @@ class VioletBacteria(Bacteria):
         super().__init__(color=(255, 0, 255),
                          penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_VioletBacteria,
                          penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_VioletBacteria,
-                         speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna)
+                         speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna,MITOSIS_RATE=MITOSIS_RATE_VioletBacteria)
 
     def calculate_angle(self, world):
         total_dx = 0
@@ -29,13 +30,15 @@ class VioletBacteria(Bacteria):
             total_dx += food_dx
             total_dy += food_dy
 
-        for b in world.bacteria_population:
-            if isinstance(b, RedBacteria) and not b.is_dead():
-                dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5
+        enemies = world.get_nearby_from_grid(self, world.grid_red)
+
+        for enemy in enemies:
+            if not enemy.is_dead():
+                dist = ((self.position_X - enemy.position_X) ** 2 + (self.position_Y - enemy.position_Y) ** 2) ** 0.5
 
                 if dist < self.dna["fear_radius"] and dist > 0:
-                    run_dx = self.position_X - b.position_X
-                    run_dy = self.position_Y - b.position_Y
+                    run_dx = self.position_X - enemy.position_X
+                    run_dy = self.position_Y - enemy.position_Y
                     strength = self.dna["fear"] / dist
 
                     total_dx += run_dx * strength
@@ -55,3 +58,10 @@ class VioletBacteria(Bacteria):
         elif isinstance(target, BlueBacteria) and not target.is_dead():
             target.health = -100
             self.heal(40)
+
+    def think(self, world):
+        targets = [
+            (world.grid_food, 0),
+            (world.grid_blue, 50)
+        ]
+        return self.find_target(world, targets)

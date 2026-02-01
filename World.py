@@ -10,7 +10,10 @@ class World:
                  start_count_RedBacteria=START_COUNT_RedBacteria,
                  start_count_VioletBacteria=START_COUNT_VioletBacteria,
                  count_food_per_update=COUNT_FOOD_PER_UPDATE):
-        self.grid = {}
+        self.grid_food = {}
+        self.grid_blue = {}
+        self.grid_red = {}
+        self.grid_violet = {}
         self.bacteria_population = []
 
         for _ in range(start_count_BlueBacteria):
@@ -29,25 +32,46 @@ class World:
         self.max_history_length = 300
 
     def update_grid(self):
-        self.grid = {}
-        all_entities = self.food_list + self.bacteria_population
-        for entity in all_entities:
-            cell_x = int(entity.position_X // CELL_SIZE)
-            cell_y = int(entity.position_Y // CELL_SIZE)
-            key = (cell_x, cell_y)
-            if key not in self.grid:
-                self.grid[key] = []
-            self.grid[key].append(entity)
+        self.grid_food = {}
+        self.grid_blue = {}
+        self.grid_red = {}
+        self.grid_violet = {}
 
-    def get_nearby_objects(self, entity):
+        for f in self.food_list:
+            cx, cy = int(f.position_X // CELL_SIZE), int(f.position_Y // CELL_SIZE)
+            if (cx, cy) not in self.grid_food: self.grid_food[(cx, cy)] = []
+            self.grid_food[(cx, cy)].append(f)
+
+        for b in self.bacteria_population:
+            if b.is_dead(): continue
+
+            cx, cy = int(b.position_X // CELL_SIZE), int(b.position_Y // CELL_SIZE)
+            key = (cx, cy)
+
+            b_type = type(b).__name__
+
+            if b_type == "BlueBacteria":
+                if key not in self.grid_blue: self.grid_blue[key] = []
+                self.grid_blue[key].append(b)
+
+            elif b_type == "RedBacteria":
+                if key not in self.grid_red: self.grid_red[key] = []
+                self.grid_red[key].append(b)
+
+            elif b_type == "VioletBacteria":
+                if key not in self.grid_violet: self.grid_violet[key] = []
+                self.grid_violet[key].append(b)
+
+    def get_nearby_from_grid(self, entity, target_grid):
         objects = []
         cx = int(entity.position_X // CELL_SIZE)
         cy = int(entity.position_Y // CELL_SIZE)
+
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
                 key = (cx + dx, cy + dy)
-                if key in self.grid:
-                    objects.extend(self.grid[key])
+                if key in target_grid:
+                    objects.extend(target_grid[key])
         return objects
 
     def update(self):

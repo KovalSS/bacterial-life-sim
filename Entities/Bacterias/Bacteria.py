@@ -10,7 +10,7 @@ class Bacteria(Entity):
     def __init__(self, color,penalty_speed=None,
                  penalty_MAX_HEALTH=None,
                  speed=None, MAX_HEALTH = None,
-                 dna=None):
+                 dna=None,MITOSIS_RATE=None):
         super().__init__()
         self.penalty_speed = penalty_speed
         self.penalty_MAX_HEALTH = penalty_MAX_HEALTH
@@ -20,14 +20,19 @@ class Bacteria(Entity):
         self.speed = speed
         self.MAX_HEALTH = MAX_HEALTH
         self.health = self.MAX_HEALTH
+        self.MITOSIS_RATE = MITOSIS_RATE
         if dna is None:
             self.dna = {}
         else:
             self.dna = dna
+        self.age = 0
+        self.MAX_AGE = random.uniform(*MAX_AGE)
 
     def update(self, world):
         if self.is_dead():
             return None
+
+        self.age += 1
 
         if self.target is None or (hasattr(self.target, 'is_dead') and self.target.is_dead()) or (
                 self.target not in world.food_list and self.target not in world.bacteria_population):
@@ -48,18 +53,29 @@ class Bacteria(Entity):
         return False
 
     def think(self, world):
+        pass
+
+    def find_target(self, world, search_configs):
         closest = None
         min_dist = float('inf')
-        nearby_objects = world.get_nearby_objects(self)
-        for entity in nearby_objects:
-            if self.can_eat(entity):
+
+        for grid, bias in search_configs:
+            nearby = world.get_nearby_from_grid(self, grid)
+
+            for entity in nearby:
+                if hasattr(entity, 'is_dead') and entity.is_dead():
+                    continue
+
                 dx = self.position_X - entity.position_X
                 dy = self.position_Y - entity.position_Y
-                dist_sq = dx * dx + dy * dy
+                real_dist = (dx ** 2 + dy ** 2) ** 0.5
 
-                if dist_sq < min_dist:
-                    min_dist = dist_sq
+                perceived_dist = real_dist - bias
+
+                if perceived_dist < min_dist:
+                    min_dist = perceived_dist
                     closest = entity
+
         return closest
 
     def calculate_angle(self, world):
@@ -103,13 +119,13 @@ class Bacteria(Entity):
         self.health = min(self.health, self.MAX_HEALTH)
 
     def is_dead(self):
-        return self.health <= 0
+        return self.health <= 0 or self.age >= self.MAX_AGE
 
     def get_health_percentage(self):
         return self.health / self.MAX_HEALTH
 
     def reproduce(self,**kwargs):
-        if self.get_health_percentage() >= 0.8:
+        if self.get_health_percentage() > 0.5 and random.random() < self.MITOSIS_RATE:
             self.health /= 2
             child_dna = self.dna.copy()
             for key in child_dna:

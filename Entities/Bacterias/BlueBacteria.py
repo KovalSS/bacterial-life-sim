@@ -4,18 +4,19 @@ class BlueBacteria(Bacteria):
                  MAX_HEALTH=None,
                  dna=None,
                  penalty_speed=None,
-                 penalty_MAX_HEALTH=None):
+                 penalty_MAX_HEALTH=None,
+                 MITOSIS_RATE=None):
         MAX_HEALTH = MAX_HEALTH if MAX_HEALTH is not None else random.uniform(*MAX_HEALTH_BlueBacteria)
         speed = speed if  speed is not None else random.uniform(*SPEED_BlueBacteria)
         if dna is None:
             dna = {
-                "fear": random.uniform(0, 5),
-                "fear_radius": random.uniform(10, 50)
+                "fear": random.uniform(0, 20),
+                "fear_radius": random.uniform(0, 20)
             }
         super().__init__(color=(0, 0, 255),
                          penalty_speed = penalty_speed if penalty_speed is not None else PENALTY_SPEED_BlueBacteria,
                          penalty_MAX_HEALTH = penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_BlueBacteria,
-                         speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna)
+                         speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna,MITOSIS_RATE=MITOSIS_RATE_BlueBacteria)
 
     def calculate_angle(self, world):
         total_dx = 0
@@ -26,14 +27,16 @@ class BlueBacteria(Bacteria):
             total_dx += food_dx
             total_dy += food_dy
 
-        for b in world.get_nearby_objects(self):
-            b_type = type(b).__name__
-            if (b_type == "RedBacteria" or b_type == "VioletBacteria") and not b.is_dead():
-                dist = ((self.position_X - b.position_X) ** 2 + (self.position_Y - b.position_Y) ** 2) ** 0.5
+        enemies = world.get_nearby_from_grid(self, world.grid_red)
+        enemies += world.get_nearby_from_grid(self, world.grid_violet)
+
+        for enemy in enemies:
+            if not enemy.is_dead():
+                dist = ((self.position_X - enemy.position_X) ** 2 + (self.position_Y - enemy.position_Y) ** 2) ** 0.5
 
                 if dist < self.dna["fear_radius"] and dist > 0:
-                    run_dx = self.position_X - b.position_X
-                    run_dy = self.position_Y - b.position_Y
+                    run_dx = self.position_X - enemy.position_X
+                    run_dy = self.position_Y - enemy.position_Y
                     strength = self.dna["fear"] / dist
 
                     total_dx += run_dx * strength
@@ -50,3 +53,6 @@ class BlueBacteria(Bacteria):
         if target in world.food_list:
             world.food_list.remove(target)
             self.heal(20)
+
+    def think(self, world):
+        return self.find_target(world, [(world.grid_food, 0)])
