@@ -39,9 +39,6 @@ class VioletBacteria(Bacteria, FearMixin):
         if total_dx != 0 or total_dy != 0:
             self.angle = math.degrees(math.atan2(total_dy, total_dx))
 
-    def can_eat(self, other):
-        return isinstance(other, Food) or isinstance(other, BlueBacteria)
-
 
     def eat(self, target, world):
         if target in world.food_list:

@@ -9,25 +9,32 @@ COUNT_FOOD_PER_UPDATE = 50
 
 
 START_COUNT_BlueBacteria = 100
-START_COUNT_RedBacteria = 5
+START_COUNT_RedBacteria = 10
 START_COUNT_VioletBacteria = 0
+
+
+MIN_BLUE_BACTERIA = 3
+RESPAWN_BLUE_AMOUNT = 10
+
+MIN_RED_BACTERIA = 1
+RESPAWN_RED_AMOUNT = 3
 
 MAX_AGE = (200, 500)
 
 FEAR_BlueBacteria = (0, 5)
 FEAR_RADIUS_BlueBacteria = (0, 20)
 
-SPEED_BlueBacteria = (0.3, 0.6)
+SPEED_BlueBacteria = (0.5, 0.8)
 MAX_HEALTH_BlueBacteria = (100, 150)
 PENALTY_SPEED_BlueBacteria = 0.02
 PENALTY_MAX_HEALTH_BlueBacteria = 0.0
 MITOSIS_RATE_BlueBacteria = 0.02
 
-SPEED_RedBacteria = (0.5, 1.5)
+SPEED_RedBacteria = (0.6, 1.0)
 MAX_HEALTH_RedBacteria = (150, 250)
-PENALTY_SPEED_RedBacteria = 0.01
+PENALTY_SPEED_RedBacteria = 0.02
 PENALTY_MAX_HEALTH_RedBacteria = 0.0
-MITOSIS_RATE_RedBacteria = 0.005
+MITOSIS_RATE_RedBacteria = 0.02
 
 SPEED_VioletBacteria = (1.0, 1.5)
 MAX_HEALTH_VioletBacteria = (100, 200)

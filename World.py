@@ -74,7 +74,23 @@ class World:
                     objects.extend(target_grid[key])
         return objects
 
+    def check_repopulation(self):
+        blues = sum(1 for b in self.bacteria_population if isinstance(b, BlueBacteria))
+        reds = sum(1 for b in self.bacteria_population if isinstance(b, RedBacteria))
+
+        if blues < MIN_BLUE_BACTERIA:
+            for _ in range(RESPAWN_BLUE_AMOUNT):
+                new_b = BlueBacteria()
+                self.bacteria_population.append(new_b)
+
+        if reds < MIN_RED_BACTERIA:
+            for _ in range(RESPAWN_RED_AMOUNT):
+                self.bacteria_population.append(RedBacteria())
+
+
+
     def update(self):
+        self.check_repopulation()
         self.update_grid()
         self.bacteria_population = [b for b in self.bacteria_population if not b.is_dead()]
         new_babies = []

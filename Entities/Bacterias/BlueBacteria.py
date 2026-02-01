@@ -36,8 +36,6 @@ class BlueBacteria(Bacteria, FearMixin):
         if total_dx != 0 or total_dy != 0:
             self.angle = math.degrees(math.atan2(total_dy, total_dx))
 
-    def can_eat(self, other):
-        return isinstance(other, Food)
 
 
     def eat(self, target, world):
@@ -47,3 +45,5 @@ class BlueBacteria(Bacteria, FearMixin):
 
     def think(self, world):
         return self.find_target(world, [(world.grid_food, 0)])
+
+

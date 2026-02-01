@@ -49,9 +49,6 @@ class Bacteria(Entity):
 
         return child
 
-    def can_eat(self, other):
-        return False
-
     def think(self, world):
         pass
 

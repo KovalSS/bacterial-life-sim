@@ -13,11 +13,6 @@ class RedBacteria(Bacteria):
                          penalty_MAX_HEALTH=penalty_MAX_HEALTH if penalty_MAX_HEALTH is not None else PENALTY_MAX_HEALTH_RedBacteria,
                          speed=speed, MAX_HEALTH=MAX_HEALTH, dna=dna, MITOSIS_RATE=MITOSIS_RATE_RedBacteria)
 
-    def can_eat(self, other):
-        is_bacteria = isinstance(other, Bacteria)
-        is_not_my_family = type(self) != type(other)
-        return is_bacteria and is_not_my_family and not other.is_dead()
-
 
     def eat(self, target, world):
         if not target.is_dead():
