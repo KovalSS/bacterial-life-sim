@@ -1,11 +1,11 @@
-WORLD_SIZE = (100, 100)
-CELL_SIZE = 50
+WORLD_SIZE = (100, 75)
+CELL_SIZE = 25
 GRID_WIDTH = int(WORLD_SIZE[0] / CELL_SIZE)
 GRID_HEIGHT = int(WORLD_SIZE[1] / CELL_SIZE)
 
-START_COUNT_FOOD = 250
-MAX_FOOD_COUNT = 1500
-COUNT_FOOD_PER_UPDATE = 50
+START_COUNT_FOOD = 100
+MAX_FOOD_COUNT = 1000000
+COUNT_FOOD_PER_UPDATE = 10
 
 
 START_COUNT_BlueBacteria = 100
@@ -22,19 +22,19 @@ RESPAWN_RED_AMOUNT = 3
 MAX_AGE = (200, 500)
 
 FEAR_BlueBacteria = (0, 5)
-FEAR_RADIUS_BlueBacteria = (0, 20)
+FEAR_RADIUS_BlueBacteria = (0, 1)
 
-SPEED_BlueBacteria = (0.5, 0.8)
-MAX_HEALTH_BlueBacteria = (100, 150)
-PENALTY_SPEED_BlueBacteria = 0.02
-PENALTY_MAX_HEALTH_BlueBacteria = 0.0
-MITOSIS_RATE_BlueBacteria = 0.02
+SPEED_BlueBacteria = (0.1, 0.3)
+MAX_HEALTH_BlueBacteria = (150, 250)
+PENALTY_SPEED_BlueBacteria = 0.5
+PENALTY_MAX_HEALTH_BlueBacteria = 0.0002
+MITOSIS_RATE_BlueBacteria = 0.05
 
-SPEED_RedBacteria = (0.6, 1.0)
+SPEED_RedBacteria = (0.2, 0.4)
 MAX_HEALTH_RedBacteria = (150, 250)
-PENALTY_SPEED_RedBacteria = 0.02
-PENALTY_MAX_HEALTH_RedBacteria = 0.0
-MITOSIS_RATE_RedBacteria = 0.02
+PENALTY_SPEED_RedBacteria = 0.5
+PENALTY_MAX_HEALTH_RedBacteria = 0.0001
+MITOSIS_RATE_RedBacteria = 0.05
 
 SPEED_VioletBacteria = (1.0, 1.5)
 MAX_HEALTH_VioletBacteria = (100, 200)
